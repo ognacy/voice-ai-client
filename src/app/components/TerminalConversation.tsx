@@ -35,7 +35,6 @@ export const TerminalConversation = () => {
           <span className="content" style={{ opacity: 0.5 }}>
             {">"} Awaiting connection...
           </span>
-          <span className="cursor-blink"></span>
         </div>
       ) : (
         textMessages.map((msg, index) => {
