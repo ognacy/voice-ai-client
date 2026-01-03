@@ -27,8 +27,9 @@ export const TerminalConversation = () => {
   };
 
   return (
-    <div className="terminal-window h-full" ref={containerRef}>
-      <div className="section-header">// TRANSCRIPT</div>
+    <div className="terminal-window h-full">
+      <div className="section-header">{"// VOICE TRANSCRIPT"}</div>
+      <div className="terminal-content" ref={containerRef}>
       {textMessages.length === 0 ? (
         <div className="terminal-line">
           <span className="content" style={{ opacity: 0.5 }}>
@@ -40,22 +41,17 @@ export const TerminalConversation = () => {
         textMessages.map((msg, index) => {
           const text = getMessageText(msg);
           if (!text.trim()) return null;
-          // Find if this is the last bot message in the conversation
-          const lastBotIndex = textMessages.map((m, i) => m.role === "assistant" ? i : -1).filter(i => i !== -1).pop();
-          const isLastBotMessage = msg.role === "assistant" && index === lastBotIndex;
           return (
             <div key={index} className="terminal-line">
               <span className={`label ${msg.role === "assistant" ? "bot" : "user"}`}>
                 {msg.role === "assistant" ? "bot" : "user"}:
               </span>{" "}
-              <span className="content">
-                {text}
-                {isLastBotMessage && <span className="commodore-cursor" />}
-              </span>
+              <span className="content">{text}</span>
             </div>
           );
         })
       )}
+      </div>
     </div>
   );
 };
