@@ -1,0 +1,593 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
+@import "@pipecat-ai/voice-ui-kit/styles";
+
+:root {
+  /* CRT Green color palette */
+  --crt-green: #33ff33;
+  --crt-green-dim: #1a991a;
+  --crt-green-glow: #00ff00;
+  --crt-dark: #0a0a0a;
+  --crt-dark-lighter: #111111;
+  --crt-scanline: rgba(0, 0, 0, 0.1);
+}
+
+/* Override voice-ui-kit theme */
+html, body {
+  background-color: var(--crt-dark) !important;
+  color: var(--crt-green) !important;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace !important;
+}
+
+/* CRT screen effect container */
+.crt-container {
+  position: relative;
+  background: var(--crt-dark);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow:
+    inset 0 0 100px rgba(0, 255, 0, 0.05),
+    0 0 20px rgba(0, 255, 0, 0.1);
+}
+
+/* Scanline overlay - static, no animation */
+.crt-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+  pointer-events: none;
+  border-radius: 20px;
+  z-index: 1000;
+}
+
+/* Phosphor glow effect on text */
+.glow-text {
+  color: var(--crt-green);
+  text-shadow:
+    0 0 5px var(--crt-green-glow),
+    0 0 10px var(--crt-green-glow),
+    0 0 20px rgba(0, 255, 0, 0.3);
+}
+
+/* Terminal window styling */
+.terminal-window {
+  background: var(--crt-dark);
+  border: 1px solid var(--crt-green-dim);
+  border-radius: 4px;
+  font-family: 'VT323', 'IBM Plex Mono', monospace;
+  font-size: 18px;
+  line-height: 1.4;
+  padding: 16px;
+  color: var(--crt-green);
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  overflow-y: auto;
+}
+
+.terminal-window::-webkit-scrollbar {
+  width: 8px;
+}
+
+.terminal-window::-webkit-scrollbar-track {
+  background: var(--crt-dark);
+}
+
+.terminal-window::-webkit-scrollbar-thumb {
+  background: var(--crt-green-dim);
+  border-radius: 4px;
+}
+
+.terminal-window::-webkit-scrollbar-thumb:hover {
+  background: var(--crt-green);
+}
+
+/* Terminal message styling */
+.terminal-line {
+  margin-bottom: 8px;
+  word-wrap: break-word;
+}
+
+.terminal-line .label {
+  color: var(--crt-green);
+  font-weight: bold;
+}
+
+.terminal-line .label.bot {
+  color: #00ffff;
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.terminal-line .label.user {
+  color: var(--crt-green);
+}
+
+.terminal-line .content {
+  color: var(--crt-green);
+  opacity: 0.9;
+}
+
+/* Events panel styling */
+.events-panel {
+  background: var(--crt-dark);
+  border: 1px solid var(--crt-green-dim);
+  border-radius: 4px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--crt-green-dim);
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.events-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.events-panel::-webkit-scrollbar-track {
+  background: var(--crt-dark);
+}
+
+.events-panel::-webkit-scrollbar-thumb {
+  background: var(--crt-green-dim);
+  border-radius: 3px;
+}
+
+.event-item {
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(51, 255, 51, 0.1);
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.event-item:last-child {
+  border-bottom: none;
+}
+
+.event-timestamp {
+  color: var(--crt-green-dim);
+  margin-right: 8px;
+}
+
+.event-type {
+  color: var(--crt-green);
+  font-weight: 500;
+}
+
+/* Header/control bar styling - MOVED TO BOTTOM */
+
+/* Button styling - CRT style */
+.crt-button {
+  background: transparent;
+  border: 1px solid var(--crt-green);
+  color: var(--crt-green);
+  padding: 8px 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  cursor: pointer;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  transition: all 0.2s ease;
+}
+
+.crt-button:hover {
+  background: rgba(51, 255, 51, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.crt-button:active {
+  background: rgba(51, 255, 51, 0.2);
+}
+
+.crt-button.connected {
+  border-color: #ff3333;
+  color: #ff3333;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+.crt-button.connected:hover {
+  background: rgba(255, 51, 51, 0.1);
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+
+/* Override voice-ui-kit components */
+[data-theme] {
+  --color-background: var(--crt-dark) !important;
+  --color-foreground: var(--crt-green) !important;
+  --color-primary: var(--crt-green) !important;
+  --color-secondary: var(--crt-green-dim) !important;
+  --color-muted: var(--crt-dark-lighter) !important;
+  --color-border: var(--crt-green-dim) !important;
+  --font-family: 'IBM Plex Mono', monospace !important;
+}
+
+/* Hide any bright backgrounds from the kit */
+.pipecat-container,
+.pipecat-panel,
+[class*="Panel"],
+[class*="Container"] {
+  background: var(--crt-dark) !important;
+  color: var(--crt-green) !important;
+}
+
+/* Style the connect button */
+button[class*="connect"],
+button[class*="Connect"] {
+  background: transparent !important;
+  border: 1px solid var(--crt-green) !important;
+  color: var(--crt-green) !important;
+  font-family: 'IBM Plex Mono', monospace !important;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+button[class*="connect"]:hover,
+button[class*="Connect"]:hover {
+  background: rgba(51, 255, 51, 0.1) !important;
+}
+
+/* Audio control styling */
+button[class*="audio"],
+button[class*="Audio"],
+button[class*="mic"],
+button[class*="Mic"] {
+  background: transparent !important;
+  border: 1px solid var(--crt-green) !important;
+  color: var(--crt-green) !important;
+}
+
+/* Spinner/loader styling */
+[class*="Spinner"],
+[class*="Loader"],
+[class*="spinner"],
+[class*="loader"] {
+  border-color: var(--crt-green-dim) !important;
+  border-top-color: var(--crt-green) !important;
+}
+
+/* Section headers */
+.section-header {
+  color: var(--crt-green);
+  font-family: 'VT323', monospace;
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+/* Blinking cursor effect for active input */
+.cursor-blink::after {
+  content: "_";
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Commodore-style blinking block cursor */
+.commodore-cursor {
+  display: inline-block;
+  width: 10px;
+  height: 18px;
+  background: var(--crt-green);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: commodore-blink 1s step-end infinite;
+  box-shadow: 0 0 8px var(--crt-green-glow);
+}
+
+@keyframes commodore-blink {
+  0%, 50% {
+    opacity: 1;
+    background: var(--crt-green);
+  }
+  51%, 100% {
+    opacity: 0;
+    background: transparent;
+  }
+}
+
+/* Status indicator */
+.status-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.status-indicator.online {
+  background: var(--crt-green);
+  box-shadow: 0 0 10px var(--crt-green-glow);
+}
+
+.status-indicator.offline {
+  background: var(--crt-green-dim);
+}
+
+/* Main layout adjustments */
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  background: var(--crt-dark);
+}
+
+.content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.transcript-section {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.events-section {
+  height: 400px;
+  flex-shrink: 0;
+}
+
+/* Events wrapper - styles moved below */
+
+/* Hide filter from EventsPanel */
+[class*="EventsPanel"] [class*="filter"],
+[class*="EventsPanel"] [class*="Filter"],
+[class*="EventsPanel"] select,
+[class*="EventsPanel"] [class*="select"],
+[class*="events"] [class*="filter"],
+[class*="events"] [class*="Filter"],
+[class*="EventsPanel"] [class*="header"] select,
+[class*="EventsPanel"] [class*="Header"] select {
+  display: none !important;
+}
+
+/* Force green styling on EventsPanel */
+.events-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--crt-dark);
+  border: 1px solid var(--crt-green-dim);
+  border-radius: 4px;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.events-wrapper > div:last-child {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.events-wrapper [class*="EventsPanel"],
+.events-wrapper [class*="Panel"] {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+[class*="EventsPanel"],
+[class*="EventsPanel"] *,
+[class*="events-panel"],
+.events-wrapper [class*="Panel"],
+.events-wrapper [class*="Panel"] * {
+  background: transparent !important;
+  color: var(--crt-green) !important;
+  border-color: var(--crt-green-dim) !important;
+  font-family: 'VT323', 'IBM Plex Mono', monospace !important;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+[class*="EventsPanel"] [class*="item"],
+[class*="EventsPanel"] [class*="row"],
+[class*="EventsPanel"] [class*="event"],
+[class*="EventsPanel"] span,
+[class*="EventsPanel"] div {
+  color: var(--crt-green) !important;
+  text-shadow: 0 0 3px rgba(0, 255, 0, 0.3);
+}
+
+[class*="EventsPanel"] [class*="timestamp"],
+[class*="EventsPanel"] [class*="time"] {
+  color: var(--crt-green-dim) !important;
+  opacity: 0.8;
+}
+
+[class*="EventsPanel"] [class*="type"],
+[class*="EventsPanel"] [class*="name"] {
+  color: var(--crt-green) !important;
+}
+
+/* Custom events list */
+.events-list {
+  flex: 1;
+  overflow-y: auto;
+  font-family: 'VT323', 'IBM Plex Mono', monospace;
+  font-size: 16px;
+}
+
+.events-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.events-list::-webkit-scrollbar-track {
+  background: var(--crt-dark);
+}
+
+.events-list::-webkit-scrollbar-thumb {
+  background: var(--crt-green-dim);
+  border-radius: 3px;
+}
+
+.event-item {
+  padding: 4px 0;
+  color: var(--crt-green);
+  text-shadow: 0 0 3px rgba(0, 255, 0, 0.3);
+}
+
+.event-timestamp {
+  color: var(--crt-green-dim);
+  margin-right: 8px;
+}
+
+.event-type {
+  color: var(--crt-green);
+  font-weight: bold;
+}
+
+.event-data {
+  color: var(--crt-green);
+  opacity: 0.8;
+}
+
+/* Connection status indicator */
+.connection-status {
+  font-size: 14px;
+  margin-left: 8px;
+}
+
+.connection-status.connecting {
+  color: #ffff33;
+  text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+}
+
+.connection-status.connected {
+  color: var(--crt-green);
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.connection-status.disconnected {
+  color: #ff3333;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+/* ASCII Connect Button */
+.ascii-button {
+  background: var(--crt-dark);
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--crt-green);
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  transition: all 0.2s ease;
+  white-space: pre;
+}
+
+.ascii-button:hover {
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+}
+
+.ascii-button.disconnected {
+  background: var(--crt-dark);
+  color: var(--crt-green);
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.ascii-button.disconnected:hover {
+  background: rgba(51, 255, 51, 0.1);
+}
+
+.ascii-button.connected {
+  background: var(--crt-green);
+  color: var(--crt-dark);
+  text-shadow: none;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+.ascii-button.connected:hover {
+  background: var(--crt-green-glow);
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+}
+
+/* Mic dots indicator */
+.mic-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border: 1px solid var(--crt-green-dim);
+  background: transparent;
+}
+
+.mic-dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--crt-green-dim);
+  transition: all 0.1s ease;
+}
+
+.mic-dots.active .dot {
+  background: var(--crt-green);
+  box-shadow: 0 0 8px var(--crt-green-glow);
+}
+
+.mic-dots.active .dot:nth-child(1) {
+  animation: dotPulse 0.6s ease-in-out infinite;
+}
+
+.mic-dots.active .dot:nth-child(2) {
+  animation: dotPulse 0.6s ease-in-out infinite 0.1s;
+}
+
+.mic-dots.active .dot:nth-child(3) {
+  animation: dotPulse 0.6s ease-in-out infinite 0.2s;
+}
+
+.mic-dots.active .dot:nth-child(4) {
+  animation: dotPulse 0.6s ease-in-out infinite 0.3s;
+}
+
+.mic-dots.active .dot:nth-child(5) {
+  animation: dotPulse 0.6s ease-in-out infinite 0.4s;
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+
+/* Control bar - move button to left */
+.control-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid var(--crt-green-dim);
+}
+
+.control-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.control-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+

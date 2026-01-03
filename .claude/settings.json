@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:pypi.org)",
+      "WebFetch(domain:homeassistantapi.readthedocs.io)",
+      "WebFetch(domain:github.com)",
+      "Bash(uv sync:*)",
+      "Bash(uv run python:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(gh auth status:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd Home Assistant integration with fuzzy entity matching\n\n- Add ha/ module with Home Assistant API integration\n- Implement friendly name resolution with fuzzy + semantic matching\n- Add synonym support for natural language variations \\(lamp ≈ light\\)\n- Create entity config in YAML format with global/local name scoping\n- Add comprehensive test suite for entity resolution\n- Move system prompt to prompts/system.txt\n- Preload embedding model at startup for faster first response\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)"
+    ]
+  }
+}
