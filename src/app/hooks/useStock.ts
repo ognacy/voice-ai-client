@@ -60,7 +60,8 @@ export const useStock = (): UseStockReturn => {
 
   // SSE listener for real-time updates
   useEffect(() => {
-    const sseUrl = process.env.NEXT_PUBLIC_SSE_URL || "http://localhost:8765/events";
+    // Use proxied SSE endpoint to work in remote/Tailscale environments
+    const sseUrl = "/api/events";
     const es = new EventSource(sseUrl);
 
     es.addEventListener("stock_created", (e) => {

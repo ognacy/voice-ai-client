@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import "./globals.css";
+import { ErrorSuppressor } from "./components/ErrorSuppressor";
 
 export const metadata: Metadata = {
   title: "Voice UI Kit - Simple Chatbot",
@@ -14,7 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ErrorSuppressor />
+        {children}
+      </body>
     </html>
   );
 }

@@ -187,7 +187,8 @@ export const useTextChat = (): UseTextChatReturn => {
 
   // Set up SSE listener for bot responses
   useEffect(() => {
-    const sseUrl = process.env.NEXT_PUBLIC_SSE_URL || "http://localhost:8765/events";
+    // Use proxied SSE endpoint to work in remote/Tailscale environments
+    const sseUrl = "/api/events";
 
     const es = new EventSource(sseUrl);
     eventSourceRef.current = es;

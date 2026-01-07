@@ -23,7 +23,8 @@ export const TerminalEvents = () => {
   }, [events]);
 
   useEffect(() => {
-    const sseUrl = process.env.NEXT_PUBLIC_SSE_URL || "http://localhost:8765/events";
+    // Use proxied SSE endpoint to work in remote/Tailscale environments
+    const sseUrl = "/api/events";
 
     setConnectionStatus("connecting");
     const es = new EventSource(sseUrl);
