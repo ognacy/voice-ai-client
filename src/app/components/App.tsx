@@ -10,6 +10,9 @@ import { MemoriesTable } from "./MemoriesTable";
 import { StockTable } from "./StockTable";
 import { AsciiConnectButton } from "./AsciiConnectButton";
 import { AsciiResetButton } from "./AsciiResetButton";
+import { ProfileSelector } from "./ProfileSelector";
+import { GatingModeSelector } from "./GatingModeSelector";
+import { ListenToggleButton } from "./ListenToggleButton";
 import { MicDots } from "./MicDots";
 import { VersionDisplay } from "./VersionDisplay";
 import { NewVersionPopup } from "./NewVersionPopup";
@@ -17,6 +20,7 @@ import { useTextChat } from "../hooks/useTextChat";
 import { useMemories } from "../hooks/useMemories";
 import { useStock } from "../hooks/useStock";
 import { useVersion } from "../hooks/useVersion";
+import { useClientProfile } from "../hooks/useClientProfile";
 
 interface AppProps extends PipecatBaseChildProps {}
 
@@ -42,6 +46,17 @@ export const App = ({
     newVersions,
     dismissNewVersions,
   } = useVersion();
+  const {
+    clients,
+    selectedClientId,
+    selectClient,
+    isLoadingClients,
+    gatingModes,
+    currentGatingMode,
+    setGatingMode,
+    isListening,
+    toggleListening,
+  } = useClientProfile();
 
   useEffect(() => {
     client?.initDevices();
@@ -65,6 +80,24 @@ export const App = ({
             onReset={resetSession}
             isConnected={textChatConnected}
           />
+          <ProfileSelector
+            clients={clients}
+            selectedClientId={selectedClientId}
+            onSelectClient={selectClient}
+            isLoading={isLoadingClients}
+          />
+          <GatingModeSelector
+            modes={gatingModes}
+            currentMode={currentGatingMode}
+            onSelectMode={setGatingMode}
+            disabled={!selectedClientId}
+          />
+          {currentGatingMode === "toggle" && (
+            <ListenToggleButton
+              isListening={isListening}
+              onToggle={toggleListening}
+            />
+          )}
         </div>
         <div className="control-bar-right">
           <VersionDisplay
