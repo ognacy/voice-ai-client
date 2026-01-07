@@ -1,3 +1,6 @@
+0.6:
+- cosmetic changes
+
 0.5:
 - Add version display showing client and server versions
 - Click versions to view full changelog history

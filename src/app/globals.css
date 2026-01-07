@@ -930,9 +930,9 @@ button[class*="Mic"] {
 
 /* ASCII Connect Button */
 .ascii-button {
-  background: var(--crt-dark);
-  border: none;
-  outline: none;
+  background: var(--crt-dark) !important;
+  border: none !important;
+  outline: none !important;
   padding: 4px;
   cursor: pointer;
   font-family: 'IBM Plex Mono', monospace;
@@ -942,12 +942,13 @@ button[class*="Mic"] {
   text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
   transition: all 0.2s ease;
   white-space: pre;
-  box-shadow: none;
+  box-shadow: none !important;
 }
 
 .ascii-button:focus {
-  outline: none;
-  box-shadow: none;
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 .ascii-button:hover {
