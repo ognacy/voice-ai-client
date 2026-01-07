@@ -31,6 +31,8 @@ export const VersionDisplay = ({
     setModalType(null);
   };
 
+  const serverOffline = !serverVersion;
+
   return (
     <>
       <div className="version-display">
@@ -43,15 +45,14 @@ export const VersionDisplay = ({
         >
           client: {clientVersion || "?"}
         </span>
-        <span className="version-separator">,</span>
         <span
-          className="version-item"
+          className={`version-item ${serverOffline ? "offline" : ""}`}
           onClick={handleServerClick}
           role="button"
           tabIndex={0}
           onKeyDown={(e) => e.key === "Enter" && handleServerClick()}
         >
-          server: {serverVersion || "?"}
+          server: {serverVersion || "offline"}
         </span>
       </div>
 

@@ -1364,8 +1364,9 @@ button[class*="Mic"] {
 /* Version Display */
 .version-display {
   display: flex;
-  align-items: center;
-  gap: 4px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   color: var(--crt-green-dim);
@@ -1385,8 +1386,15 @@ button[class*="Mic"] {
   background: rgba(51, 255, 51, 0.1);
 }
 
-.version-separator {
-  color: var(--crt-green-dim);
+.version-item.offline {
+  color: var(--crt-red);
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+.version-item.offline:hover {
+  color: var(--crt-red);
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+  background: rgba(255, 51, 51, 0.1);
 }
 
 /* Modal Backdrop */
