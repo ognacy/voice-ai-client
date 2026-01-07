@@ -19,6 +19,21 @@
   --crt-red-glow: #ff0000;
 }
 
+/* NUCLEAR: Remove all borders from all buttons everywhere */
+button,
+button:focus,
+button:active,
+button:hover,
+button:focus-visible,
+button:focus-within,
+[type="button"],
+[type="submit"],
+[type="reset"] {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 /* Override voice-ui-kit theme */
 html, body {
   background-color: var(--crt-dark) !important;
