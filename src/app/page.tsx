@@ -25,7 +25,6 @@ export default function Home() {
         >
           {({
             client,
-            handleConnect,
             handleDisconnect,
             error,
           }: PipecatBaseChildProps) =>
@@ -36,7 +35,7 @@ export default function Home() {
             ) : (
               <App
                 client={client}
-                handleConnect={handleConnect}
+                connectParams={connectParams}
                 handleDisconnect={handleDisconnect}
               />
             )

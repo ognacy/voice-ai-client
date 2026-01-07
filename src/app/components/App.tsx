@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 
-import type { PipecatBaseChildProps } from "@pipecat-ai/voice-ui-kit";
+import type { PipecatClient } from "@pipecat-ai/client-js";
+import type { APIRequest } from "@pipecat-ai/client-js";
 
 import { Tabs } from "./Tabs";
 import { TerminalConversation } from "./TerminalConversation";
@@ -22,7 +23,11 @@ import { useStock } from "../hooks/useStock";
 import { useVersion } from "../hooks/useVersion";
 import { useClientProfile } from "../hooks/useClientProfile";
 
-interface AppProps extends PipecatBaseChildProps {}
+interface AppProps {
+  client: PipecatClient;
+  connectParams: APIRequest;
+  handleDisconnect?: () => void | Promise<void>;
+}
 
 const TABS = [
   { id: "interact", label: "Interact" },
@@ -32,7 +37,7 @@ const TABS = [
 
 export const App = ({
   client,
-  handleConnect,
+  connectParams,
   handleDisconnect,
 }: AppProps) => {
   const { messages: textMessages, sendMessage, resetSession, isConnected: textChatConnected } = useTextChat();
@@ -58,6 +63,28 @@ export const App = ({
     toggleListening,
   } = useClientProfile();
 
+  // Custom connect handler that passes client_id in requestData
+  const handleConnect = useCallback(async () => {
+    const requestData = {
+      ...(connectParams.requestData as Record<string, unknown> || {}),
+      ...(selectedClientId ? { client_id: selectedClientId } : {}),
+    };
+
+    await client.startBotAndConnect({
+      ...connectParams,
+      requestData,
+    });
+  }, [client, connectParams, selectedClientId]);
+
+  // Disconnect handler - use provided handler or fall back to client.disconnect()
+  const handleDisconnectInternal = useCallback(async () => {
+    if (handleDisconnect) {
+      await handleDisconnect();
+    } else {
+      await client.disconnect();
+    }
+  }, [client, handleDisconnect]);
+
   useEffect(() => {
     client?.initDevices();
   }, [client]);
@@ -74,7 +101,7 @@ export const App = ({
         <div className="control-bar-left">
           <AsciiConnectButton
             onConnect={handleConnect}
-            onDisconnect={handleDisconnect}
+            onDisconnect={handleDisconnectInternal}
           />
           <AsciiResetButton
             onReset={resetSession}
