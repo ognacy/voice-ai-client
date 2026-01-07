@@ -1,0 +1,27 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#0a0a0a"/>
+
+  <!-- CRT screen glow effect -->
+  <rect x="40" y="40" width="432" height="432" rx="20" fill="#0d1a0d"/>
+  <rect x="60" y="60" width="392" height="392" rx="10" fill="#0a0a0a" stroke="#00ff00" stroke-width="4" stroke-opacity="0.3"/>
+
+  <!-- Voice waveform visualization -->
+  <g transform="translate(256, 256)">
+    <!-- Center bars representing voice/audio -->
+    <rect x="-110" y="-55" width="22" height="110" fill="#00ff00" opacity="0.9"/>
+    <rect x="-66" y="-95" width="22" height="190" fill="#00ff00" opacity="0.9"/>
+    <rect x="-22" y="-125" width="22" height="250" fill="#00ff00" opacity="1"/>
+    <rect x="22" y="-95" width="22" height="190" fill="#00ff00" opacity="0.9"/>
+    <rect x="66" y="-55" width="22" height="110" fill="#00ff00" opacity="0.9"/>
+  </g>
+
+  <!-- Scanline effect -->
+  <defs>
+    <pattern id="scanlines512" patternUnits="userSpaceOnUse" width="512" height="8">
+      <rect width="512" height="4" fill="transparent"/>
+      <rect y="4" width="512" height="4" fill="#000000" opacity="0.1"/>
+    </pattern>
+  </defs>
+  <rect x="60" y="60" width="392" height="392" fill="url(#scanlines512)"/>
+</svg>
