@@ -21,23 +21,11 @@ export const AsciiConnectButton = ({
     }
   };
 
-  const connectArt = `┌───────────────┐
-│   > CONNECT   │
-└───────────────┘`;
-
-  const disconnectArt = `┌───────────────┐
-│ > DISCONNECT  │
-└───────────────┘`;
-
-  const connectingArt = `┌───────────────┐
-│ CONNECTING... │
-└───────────────┘`;
-
-  let art = connectArt;
+  let label = "Connect";
   if (isConnected) {
-    art = disconnectArt;
+    label = "Disconnect";
   } else if (isConnecting) {
-    art = connectingArt;
+    label = "Connecting...";
   }
 
   return (
@@ -46,7 +34,7 @@ export const AsciiConnectButton = ({
       onClick={handleClick}
       disabled={isConnecting}
     >
-      {art}
+      [ {label} ]
     </button>
   );
 };

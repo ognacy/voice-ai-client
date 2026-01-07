@@ -928,24 +928,29 @@ button[class*="Mic"] {
   left: 0;
 }
 
-/* ASCII Connect Button */
+/* Bracket-style Button */
 .ascii-button {
-  background: var(--crt-dark) !important;
+  background: transparent !important;
   border: none !important;
   outline: none !important;
-  padding: 4px;
+  padding: 8px 4px;
   cursor: pointer;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1;
   color: var(--crt-green);
   text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
   transition: all 0.2s ease;
-  white-space: pre;
   box-shadow: none !important;
 }
 
 .ascii-button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.ascii-button:focus-visible {
   outline: none !important;
   box-shadow: none !important;
   border: none !important;
@@ -956,48 +961,48 @@ button[class*="Mic"] {
 }
 
 .ascii-button.disconnected {
-  background: var(--crt-dark);
+  background: transparent !important;
   color: var(--crt-green);
   text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
 }
 
 .ascii-button.disconnected:hover {
-  background: rgba(51, 255, 51, 0.1);
+  background: rgba(51, 255, 51, 0.1) !important;
 }
 
 .ascii-button.connected {
-  background: var(--crt-green);
-  color: var(--crt-dark);
-  text-shadow: none;
+  background: transparent !important;
+  color: var(--crt-green);
+  text-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
 }
 
 .ascii-button.connected:hover {
-  background: var(--crt-green-glow);
+  background: rgba(51, 255, 51, 0.1) !important;
 }
 
 .ascii-reset-button.connected {
   color: var(--crt-green);
   text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-  background: var(--crt-dark);
+  background: transparent !important;
 }
 
 .ascii-reset-button.connected:hover {
-  background: rgba(51, 255, 51, 0.1);
+  background: rgba(51, 255, 51, 0.1) !important;
   text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
 }
 
 .ascii-reset-button.disconnected {
-  color: #ff3333;
-  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
-  background: var(--crt-dark);
+  color: var(--crt-green-dim);
+  text-shadow: 0 0 3px rgba(0, 255, 0, 0.3);
+  background: transparent !important;
 }
 
 .ascii-reset-button.disconnected:hover {
-  background: rgba(255, 51, 51, 0.1);
+  background: transparent !important;
 }
 
 .ascii-reset-button:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
