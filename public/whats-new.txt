@@ -1,0 +1,29 @@
+0.5:
+- Add version display showing client and server versions
+- Click versions to view full changelog history
+- Notify on new client or server version updates
+
+0.4:
+- Add PWA support for "Add to Home Screen" on iOS
+- Suppress iOS Safari audio device errors
+- Better microphone permission persistence
+
+0.3:
+- Add SSE proxy for Tailscale/remote environments
+- Fix EventSource connections from remote devices
+- Add networking architecture documentation
+
+0.2:
+- Add Memories panel with keyboard shortcut (M)
+- Add Inventory panel with keyboard shortcut (I)
+- Real-time sync via SSE events
+
+0.1:
+- Add text chat alongside voice chat
+- Session management with auto-reconnect
+- Dual transcript display (voice + text)
+
+0.0:
+- Initial retro 80s CRT-style UI
+- Green phosphor terminal aesthetic
+- Voice AI with WebRTC transport

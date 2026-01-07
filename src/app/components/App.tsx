@@ -11,9 +11,12 @@ import { StockTable } from "./StockTable";
 import { AsciiConnectButton } from "./AsciiConnectButton";
 import { AsciiResetButton } from "./AsciiResetButton";
 import { MicDots } from "./MicDots";
+import { VersionDisplay } from "./VersionDisplay";
+import { NewVersionPopup } from "./NewVersionPopup";
 import { useTextChat } from "../hooks/useTextChat";
 import { useMemories } from "../hooks/useMemories";
 import { useStock } from "../hooks/useStock";
+import { useVersion } from "../hooks/useVersion";
 
 interface AppProps extends PipecatBaseChildProps {}
 
@@ -31,6 +34,14 @@ export const App = ({
   const { messages: textMessages, sendMessage, resetSession, isConnected: textChatConnected } = useTextChat();
   const { memories, isLoading: memoriesLoading, error: memoriesError, refresh: refreshMemories, createMemory, updateMemory, deleteMemory } = useMemories();
   const { stock, isLoading: stockLoading, error: stockError, refresh: refreshStock, createStock, updateStock, deleteStock } = useStock();
+  const {
+    clientVersion,
+    serverVersion,
+    clientHistory,
+    serverHistory,
+    newVersions,
+    dismissNewVersions,
+  } = useVersion();
 
   useEffect(() => {
     client?.initDevices();
@@ -38,6 +49,12 @@ export const App = ({
 
   return (
     <div className="main-layout crt-container">
+      {newVersions.length > 0 && (
+        <NewVersionPopup
+          newVersions={newVersions}
+          onDismiss={dismissNewVersions}
+        />
+      )}
       <div className="control-bar">
         <div className="control-bar-left">
           <AsciiConnectButton
@@ -50,6 +67,12 @@ export const App = ({
           />
         </div>
         <div className="control-bar-right">
+          <VersionDisplay
+            clientVersion={clientVersion}
+            serverVersion={serverVersion}
+            clientHistory={clientHistory}
+            serverHistory={serverHistory}
+          />
           <MicDots />
         </div>
       </div>

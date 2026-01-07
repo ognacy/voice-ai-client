@@ -1361,3 +1361,282 @@ button[class*="Mic"] {
   text-align: center;
 }
 
+/* Version Display */
+.version-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--crt-green-dim);
+  text-shadow: 0 0 3px rgba(0, 255, 0, 0.3);
+}
+
+.version-item {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+
+.version-item:hover {
+  color: var(--crt-green);
+  text-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+  background: rgba(51, 255, 51, 0.1);
+}
+
+.version-separator {
+  color: var(--crt-green-dim);
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+/* Modal Content */
+.modal-content {
+  background: var(--crt-dark);
+  border: 2px solid var(--crt-green);
+  border-radius: 4px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    0 0 30px rgba(0, 255, 0, 0.3),
+    inset 0 0 50px rgba(0, 255, 0, 0.02);
+  position: relative;
+}
+
+.modal-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.1) 2px,
+    rgba(0, 0, 0, 0.1) 4px
+  );
+  pointer-events: none;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--crt-green-dim);
+  position: relative;
+  z-index: 2;
+}
+
+.modal-title {
+  color: var(--crt-green);
+  font-family: 'VT323', 'IBM Plex Mono', monospace;
+  font-size: 20px;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--crt-green);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  color: var(--crt-red);
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: var(--crt-dark);
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: var(--crt-green-dim);
+  border-radius: 4px;
+}
+
+.modal-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--crt-green-dim);
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.modal-dismiss-btn {
+  background: transparent;
+  border: 1px solid var(--crt-green);
+  color: var(--crt-green);
+  font-family: 'VT323', 'IBM Plex Mono', monospace;
+  font-size: 18px;
+  padding: 8px 24px;
+  cursor: pointer;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  transition: all 0.2s ease;
+}
+
+.modal-dismiss-btn:hover {
+  background: rgba(51, 255, 51, 0.1);
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+/* Version History Modal */
+.version-modal .modal-body {
+  font-family: 'VT323', 'IBM Plex Mono', monospace;
+}
+
+.version-entry {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(51, 255, 51, 0.2);
+}
+
+.version-entry:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.version-entry.current {
+  background: rgba(51, 255, 51, 0.05);
+  margin: -12px -12px 20px -12px;
+  padding: 12px 12px 16px 12px;
+  border-radius: 4px;
+  border-bottom: 1px solid rgba(51, 255, 51, 0.2);
+}
+
+.version-header {
+  color: var(--crt-green);
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  text-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+}
+
+.version-current-badge,
+.version-latest-badge {
+  font-size: 14px;
+  font-weight: normal;
+  margin-left: 8px;
+}
+
+.version-current-badge {
+  color: #00ffff;
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.version-latest-badge {
+  color: var(--crt-amber);
+  text-shadow: 0 0 5px var(--crt-amber-glow);
+}
+
+.version-changes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.version-changes li {
+  color: var(--crt-green);
+  font-size: 16px;
+  padding: 4px 0;
+  text-shadow: 0 0 3px rgba(0, 255, 0, 0.3);
+  opacity: 0.9;
+}
+
+.version-loading {
+  color: var(--crt-green-dim);
+  font-style: italic;
+}
+
+/* New Version Popup */
+.new-version-modal .modal-header .modal-title {
+  color: #00ffff;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.new-version-section {
+  margin-bottom: 24px;
+}
+
+.new-version-section:last-child {
+  margin-bottom: 0;
+}
+
+.new-version-header {
+  color: var(--crt-green);
+  font-family: 'VT323', 'IBM Plex Mono', monospace;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.new-version-from {
+  color: var(--crt-green-dim);
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.new-version-changes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.new-version-changes li {
+  color: var(--crt-green);
+  font-family: 'VT323', 'IBM Plex Mono', monospace;
+  font-size: 18px;
+  padding: 6px 0;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.new-version-no-changes {
+  color: var(--crt-green-dim);
+  font-family: 'VT323', 'IBM Plex Mono', monospace;
+  font-size: 16px;
+  font-style: italic;
+}
+
