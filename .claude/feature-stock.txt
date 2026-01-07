@@ -1,0 +1,139 @@
+Now we will add another major feature - househould item stock keeping. The server offers an API and events sent over SSE:
+
+Stock REST API
+
+  Base URL: http://localhost:8765
+
+  Endpoints
+
+  | Method | Endpoint          | Description                  |
+  |--------|-------------------|------------------------------|
+  | GET    | /stock            | List all stock entries       |
+  | POST   | /stock            | Create or update stock entry |
+  | PUT    | /stock/{stock_id} | Update stock entry by ID     |
+  | DELETE | /stock/{stock_id} | Delete stock entry           |
+
+  GET /stock
+
+  // Response 200
+  {
+    "stock": [
+      {
+        "id": "milk_1704295234.123456",
+        "item": "milk",
+        "quantity": "2 gallons",
+        "stock_level": "sufficient",
+        "timestamp": "2026-01-03T14:00:34.123456"
+      }
+    ],
+    "count": 1
+  }
+
+  POST /stock
+
+  // Request
+  {
+    "item": "toilet paper",
+    "quantity": "5 boxes",
+    "stock_level": "sufficient"  // "out_of_stock" | "running_low" | "sufficient"
+  }
+
+  // Response 201 (created) or 200 (updated existing)
+  {
+    "id": "toilet_paper_1704295234.123456",
+    "item": "toilet paper",
+    "quantity": "5 boxes",
+    "stock_level": "sufficient",
+    "timestamp": "2026-01-03T14:00:34.123456",
+    "action": "created"  // or "updated"
+  }
+
+  PUT /stock/{stock_id}
+
+  // Request (all fields optional, at least one required)
+  {
+    "item": "toilet paper",
+    "quantity": "running low",
+    "stock_level": "running_low"
+  }
+
+  // Response 200
+  {
+    "id": "toilet_paper_1704295234.123456",
+    "item": "toilet paper",
+    "quantity": "running low",
+    "stock_level": "running_low",
+    "timestamp": "2026-01-03T14:05:00.000000"
+  }
+
+  DELETE /stock/{stock_id}
+
+  // Response 200
+  { "deleted": true }
+
+  ---
+  SSE Events
+
+  Endpoint: GET /events
+
+  stock_created
+
+  {
+    "event": "stock_created",
+    "data": {
+      "id": "milk_1704295234.123456",
+      "item": "milk",
+      "quantity": "2 gallons",
+      "stock_level": "sufficient",
+      "timestamp": "2026-01-03T14:00:34.123456"
+    }
+  }
+
+  stock_updated
+
+  {
+    "event": "stock_updated",
+    "data": {
+      "id": "milk_1704295234.123456",
+      "item": "milk",
+      "quantity": "running low",
+      "stock_level": "running_low",
+      "timestamp": "2026-01-03T14:05:00.000000"
+    }
+  }
+
+  stock_deleted
+
+  {
+    "event": "stock_deleted",
+    "data": {
+      "id": "milk_1704295234.123456"
+    }
+  }
+
+  ---
+  Stock Level Values
+
+  | Value        | Meaning                           |
+  |--------------|-----------------------------------|
+  | out_of_stock | No stock remaining                |
+  | running_low  | Stock is low, may need to reorder |
+  | sufficient   | Adequate stock available          |
+
+
+We will need the UI for that:
+
+1/ add a new tab, called 'Inventory' 
+
+2/ follow the exact same design as 'Memories': it should show a table of all items in the invetory, along with their stock. However, 
+items classified as "Running low" should be displayed in light amber tone (like the 80's PC Hercules displays), and items 
+classified as "Ran out" should be displayed in red. Sort the table by scarcity: items that ran out at the top, items running low after 
+that, and below all the items classified as having sufficient stock. 
+
+3/ editing, deleting same as with Memories 
+
+4/ adding: same as with Memories, a single line text field that accepts an item slash 
+quantity slash + (for plenty), - (for running low), 0 (for ran out) for stock classification. If the user does not supply 
+the necessary data, display a window with erorr message and information on the expected syntax. The window needs to follow the 
+retro aesthetics and be close-able with a single enter or esc key press. 
+

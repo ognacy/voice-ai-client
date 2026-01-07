@@ -1,0 +1,49 @@
+So now I am starting to host this in my tailscale network. This is how it will be running in the mid term:
+
+1/ dedicated homelab box running both the web app (this codebase) and the server (running pipecat and offering
+voice via WebRTC, voice-related events via websocket, apis via REST on port 8765 and SSE EventSource 
+via websockets, http://localhost:8765/events". 
+
+2/ i created a service in tailscale, which is basically a reverse proxy: it maps 
+app.brotula-velociraptor.ts.net to this machines's port 3000. it also terminates TLS, which means
+the client browser (i am testing this on my iphone which is also part of my tailscale network)
+sees this server as secure (https://app.brotula-velociraptor.ts.net) and serving on the standard
+port 443 for https, not some non standard 3000. 
+
+3/ the dev server is visible in the tailscale network as 
+mbp16.brotula-velociraptor.ts.net
+
+But this is just a routable DNS entry, it does not provide TLS terminating. 
+
+3/ this works fine for 
+
+  3.1/ the rest apis - i supose its because they are proxied by this web app, and not accessed directly
+  through the pipecat server exposing http://localhost:8765. The calls to retrieve the list of memories
+  or anything else via rest go through the https://app.brotula-.../ routes, and thus the browser does not
+  complain about an insecure channel. 
+
+  3.2/ the voice part. i have no clue why does it "just work". i don't understand how the client SDK for
+  pipecat works - and how can it connect to a non-https endpoint that webrtc server expoes 
+  (the POST/start/ on some high port number that seems to be the part of the webrtc session start). 
+  If you understand how it works and why it just works with my tailscale setup - please create a
+  Readme-Networking.MD file that explains it. 
+
+  3.3/ the websocket connection to get pipecat events fails to get established, and i get a runtime 
+  error in the client that says 
+
+  'runtine NotAllowedError
+
+  the call stack starts with setSinkID. 
+
+  3.4/ the websocket connection to my own SSE EventSource also does not work. I figure it may have
+  to do with the fact that it is defined in the config as ws://localhost:8765 which is not visible 
+  from the iphone i am using for testing (which would be able to reach this ws server via 
+  ws://mbp16.brotula-velociraptor.ts.net:8765, but i am not sure if the browser would like a
+  seemingly unencrypted ws resource ("seemingly" - because in actual fact tailscale does 
+  encrypt all the traffic, but it does not expose a neat wss:// endpoint automatically.
+
+  From what I understand tailscale does not offer a wss:// service layer - they currently can wrap 
+  regular http into https with their Services functionality. But the Wss I need to do myself, 
+  and i suspect that I need to do the same for pipecat exposed wss too. 
+
+Please let me know how can we fix it so everything works in a tailscale VPN environment.

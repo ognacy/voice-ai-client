@@ -1,0 +1,18 @@
+Use your frontende development skills. 
+
+We will do a major remodelling of the UI. 
+
+Change the aesthetics - we are going for a retro vibe, 80s style mainframe GUI. 
+
+Green glow text. Make it look a bit like it is displayed on a CRT, but no flickering please. 
+
+Changes to be made:
+- remove the transport selector. make it default to SmallWebRTC
+- remove the bot video panel. 
+- simplify the conversation transcript window significantly. i want it to only display assistant/user text, like it would be displayed on a terminal window: 
+
+bot: <something>
+user: <something> 
+
+- keep the events panel. remove the 'filter' option. 
+
