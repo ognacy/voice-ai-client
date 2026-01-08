@@ -9,6 +9,22 @@ interface SSEEvent {
   data: Record<string, unknown>;
 }
 
+// All SSE event types we want to display
+const SSE_EVENT_TYPES = [
+  "connected",
+  "turn_counter_updated",
+  "client_selected",
+  "gating_mode_changed",
+  "assistant_listening_started",
+  "assistant_listening_stopped",
+  "memory_created",
+  "memory_updated",
+  "memory_deleted",
+  "stock_created",
+  "stock_updated",
+  "stock_deleted",
+];
+
 export const TerminalEvents = () => {
   const [events, setEvents] = useState<SSEEvent[]>([]);
   const [connectionStatus, setConnectionStatus] = useState<"connecting" | "connected" | "disconnected">("disconnected");
@@ -37,30 +53,33 @@ export const TerminalEvents = () => {
       setConnectionStatus("disconnected");
     };
 
-    es.addEventListener("connected", (e) => {
-      const data = JSON.parse(e.data);
-      setEvents((prev) => [
-        ...prev,
-        {
-          id: eventIdRef.current++,
-          timestamp: new Date(),
-          type: "connected",
-          data,
-        },
-      ]);
-    });
-
-    es.addEventListener("turn_counter_updated", (e) => {
-      const data = JSON.parse(e.data);
-      setEvents((prev) => [
-        ...prev,
-        {
-          id: eventIdRef.current++,
-          timestamp: new Date(),
-          type: "turn_counter_updated",
-          data,
-        },
-      ]);
+    // Add listener for each event type
+    SSE_EVENT_TYPES.forEach((eventType) => {
+      es.addEventListener(eventType, (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          setEvents((prev) => [
+            ...prev,
+            {
+              id: eventIdRef.current++,
+              timestamp: new Date(),
+              type: eventType,
+              data,
+            },
+          ]);
+        } catch {
+          // Handle events with no data
+          setEvents((prev) => [
+            ...prev,
+            {
+              id: eventIdRef.current++,
+              timestamp: new Date(),
+              type: eventType,
+              data: {},
+            },
+          ]);
+        }
+      });
     });
 
     return () => {
@@ -79,14 +98,36 @@ export const TerminalEvents = () => {
   };
 
   const formatEventData = (event: SSEEvent) => {
-    if (event.type === "connected") {
-      return `session initialized`;
+    switch (event.type) {
+      case "connected":
+        return "session initialized";
+      case "turn_counter_updated": {
+        const turn = event.data.turn_count ?? event.data.count ?? "?";
+        return `turn ${turn}`;
+      }
+      case "client_selected":
+        return `client: ${event.data.client_id || "unknown"}`;
+      case "gating_mode_changed":
+        return `mode: ${event.data.mode || "unknown"}`;
+      case "assistant_listening_started":
+        return "listening ON";
+      case "assistant_listening_stopped":
+        return "listening OFF";
+      case "memory_created":
+        return `added: ${event.data.item || "item"} -> ${event.data.location || "location"}`;
+      case "memory_updated":
+        return `updated: ${event.data.item || "item"}`;
+      case "memory_deleted":
+        return `removed: ${event.data.id || "item"}`;
+      case "stock_created":
+        return `added: ${event.data.item || "item"} (${event.data.quantity || "?"})`;
+      case "stock_updated":
+        return `updated: ${event.data.item || "item"}`;
+      case "stock_deleted":
+        return `removed: ${event.data.id || "item"}`;
+      default:
+        return JSON.stringify(event.data);
     }
-    if (event.type === "turn_counter_updated") {
-      const turn = event.data.turn_count ?? event.data.count ?? "?";
-      return `turn ${turn}`;
-    }
-    return JSON.stringify(event.data);
   };
 
   return (

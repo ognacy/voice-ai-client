@@ -70,7 +70,7 @@ export const ProfileSelector = ({
         onClick={() => setIsOpen(!isOpen)}
         disabled={isLoading || clients.length === 0}
       >
-        [ {displayText} <span className="dropdown-arrow">{isOpen ? "^" : "v"}</span> ]
+        [ {displayText} <span className="dropdown-arrow">{isOpen ? "" : ""}</span> ]
       </button>
 
       {isOpen && clients.length > 0 && (

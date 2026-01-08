@@ -73,7 +73,7 @@ export const GatingModeSelector = ({
         onClick={() => setIsOpen(!isOpen)}
         disabled={disabled || modes.length === 0}
       >
-        [ {displayText} <span className="dropdown-arrow">{isOpen ? "^" : "v"}</span> ]
+        [ {displayText} <span className="dropdown-arrow">{isOpen ? "" : ""}</span> ]
       </button>
 
       {isOpen && modes.length > 0 && (

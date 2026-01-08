@@ -84,8 +84,8 @@ html, body {
 /* Terminal window styling */
 .terminal-window {
   background: var(--crt-dark);
-  border: 1px solid var(--crt-green-dim);
-  border-radius: 4px;
+  /* border: 1px solid var(--crt-green-dim);
+  border-radius: 4px; */
   font-family: 'VT323', 'IBM Plex Mono', monospace;
   font-size: 18px;
   line-height: 1.4;
@@ -147,8 +147,8 @@ html, body {
 /* Events panel styling */
 .events-panel {
   background: var(--crt-dark);
-  border: 1px solid var(--crt-green-dim);
-  border-radius: 4px;
+  /* border: 1px solid var(--crt-green-dim);
+  border-radius: 4px; */
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
   color: var(--crt-green-dim);
@@ -245,7 +245,7 @@ html, body {
   flex-direction: column;
   height: 100%;
   background: var(--crt-dark);
-  border: 1px solid var(--crt-green-dim);
+  /* border: 1px solid var(--crt-green-dim); */
   border-radius: 4px;
   padding: 16px;
   overflow: hidden;
@@ -277,8 +277,8 @@ html, body {
 .filter-input {
   flex: 1;
   background: transparent;
-  border: 1px solid var(--crt-green-dim);
-  padding: 6px 10px;
+  /* border: 1px solid var(--crt-green-dim);
+  padding: 6px 10px; */
   color: var(--crt-green);
   font-family: 'VT323', 'IBM Plex Mono', monospace;
   font-size: 16px;
@@ -299,8 +299,8 @@ html, body {
 .sort-button,
 .refresh-button {
   background: transparent;
-  border: 1px solid var(--crt-green-dim);
-  padding: 6px 12px;
+  /* border: 1px solid var(--crt-green-dim);
+  padding: 6px 12px; */
   color: var(--crt-green);
   font-family: 'VT323', 'IBM Plex Mono', monospace;
   font-size: 14px;
@@ -484,7 +484,7 @@ html, body {
 /* Inline edit input */
 .memory-edit-input {
   background: rgba(51, 255, 51, 0.1);
-  border: 1px solid var(--crt-green);
+  /* border: 1px solid var(--crt-green); */
   outline: none;
   color: var(--crt-green);
   font-family: 'VT323', 'IBM Plex Mono', monospace;
@@ -508,8 +508,8 @@ html, body {
 /* Undo button */
 .undo-button {
   background: transparent;
-  border: 1px solid var(--crt-green-dim);
-  padding: 6px 12px;
+  /* border: 1px solid var(--crt-green-dim);
+  padding: 6px 12px; */
   color: var(--crt-green);
   font-family: 'VT323', 'IBM Plex Mono', monospace;
   font-size: 14px;
@@ -531,7 +531,7 @@ html, body {
 /* Button styling - CRT style */
 .crt-button {
   background: transparent;
-  border: 1px solid var(--crt-green);
+  /* border: 1px solid var(--crt-green); */
   color: var(--crt-green);
   padding: 8px 16px;
   font-family: 'IBM Plex Mono', monospace;
@@ -585,7 +585,6 @@ html, body {
 button[class*="connect"],
 button[class*="Connect"] {
   background: transparent !important;
-  border: 1px solid var(--crt-green) !important;
   color: var(--crt-green) !important;
   font-family: 'IBM Plex Mono', monospace !important;
   text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
@@ -602,7 +601,6 @@ button[class*="Audio"],
 button[class*="mic"],
 button[class*="Mic"] {
   background: transparent !important;
-  border: 1px solid var(--crt-green) !important;
   color: var(--crt-green) !important;
 }
 
@@ -705,12 +703,6 @@ button[class*="Mic"] {
   overflow: hidden;
 }
 
-.text-transcript-section {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
-
 .events-section {
   height: 200px;
   flex-shrink: 0;
@@ -736,8 +728,6 @@ button[class*="Mic"] {
   display: flex;
   flex-direction: column;
   background: var(--crt-dark);
-  border: 1px solid var(--crt-green-dim);
-  border-radius: 4px;
   padding: 16px;
   overflow: hidden;
 }
@@ -849,100 +839,6 @@ button[class*="Mic"] {
   text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
 }
 
-/* Text Transcript Container */
-.text-transcript-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background: var(--crt-dark);
-  border: 1px solid var(--crt-green-dim);
-  border-radius: 4px;
-  padding: 16px;
-  overflow: hidden;
-}
-
-.text-transcript-messages {
-  flex: 1;
-  overflow-y: auto;
-  font-family: 'VT323', 'IBM Plex Mono', monospace;
-  font-size: 18px;
-  line-height: 1.4;
-  color: var(--crt-green);
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-  margin-bottom: 12px;
-}
-
-.text-transcript-messages::-webkit-scrollbar {
-  width: 8px;
-}
-
-.text-transcript-messages::-webkit-scrollbar-track {
-  background: var(--crt-dark);
-}
-
-.text-transcript-messages::-webkit-scrollbar-thumb {
-  background: var(--crt-green-dim);
-  border-radius: 4px;
-}
-
-/* Text Input Form */
-.text-input-form {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-top: 1px solid var(--crt-green-dim);
-  padding-top: 12px;
-}
-
-.input-prompt {
-  color: var(--crt-green);
-  font-family: 'VT323', 'IBM Plex Mono', monospace;
-  font-size: 18px;
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-}
-
-.input-wrapper {
-  flex: 1;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.text-input {
-  width: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--crt-green);
-  font-family: 'VT323', 'IBM Plex Mono', monospace;
-  font-size: 18px;
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-  caret-color: transparent;
-}
-
-.text-input::placeholder {
-  color: var(--crt-green-dim);
-  opacity: 0.5;
-}
-
-.text-input:disabled {
-  opacity: 0.5;
-}
-
-/* Input cursor - Commodore style */
-.input-cursor {
-  display: inline-block;
-  width: 10px;
-  height: 18px;
-  background: var(--crt-green);
-  margin-left: -2px;
-  vertical-align: text-bottom;
-  animation: commodore-blink 1s step-end infinite;
-  box-shadow: 0 0 8px var(--crt-green-glow);
-  position: absolute;
-  left: 0;
-}
-
 /* Bracket-style Button */
 .ascii-button {
   background: transparent !important;
@@ -995,32 +891,6 @@ button[class*="Mic"] {
   background: rgba(51, 255, 51, 0.1) !important;
 }
 
-.ascii-reset-button.connected {
-  color: var(--crt-green);
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-  background: transparent !important;
-}
-
-.ascii-reset-button.connected:hover {
-  background: rgba(51, 255, 51, 0.1) !important;
-  text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
-}
-
-.ascii-reset-button.disconnected {
-  color: var(--crt-green-dim);
-  text-shadow: 0 0 3px rgba(0, 255, 0, 0.3);
-  background: transparent !important;
-}
-
-.ascii-reset-button.disconnected:hover {
-  background: transparent !important;
-}
-
-.ascii-reset-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
 /* ASCII Dropdown */
 .ascii-dropdown {
   position: relative;
@@ -1064,7 +934,6 @@ button[class*="Mic"] {
   margin-top: 4px;
   padding: 4px 0;
   background: var(--crt-dark);
-  border: 1px solid var(--crt-green-dim);
   box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
 }
 
@@ -1139,7 +1008,6 @@ button[class*="Mic"] {
   align-items: center;
   gap: 4px;
   padding: 8px 12px;
-  border: 1px solid var(--crt-green-dim);
   background: transparent;
 }
 
@@ -1215,7 +1083,6 @@ button[class*="Mic"] {
   flex-direction: column;
   height: 100%;
   background: var(--crt-dark);
-  border: 1px solid var(--crt-green-dim);
   border-radius: 4px;
   padding: 16px;
   overflow: hidden;
@@ -1347,7 +1214,6 @@ button[class*="Mic"] {
 
 .stock-edit-input {
   background: rgba(51, 255, 51, 0.1);
-  border: 1px solid var(--crt-green);
   outline: none;
   color: var(--crt-green);
   font-family: 'VT323', 'IBM Plex Mono', monospace;
@@ -1647,7 +1513,6 @@ button[class*="Mic"] {
 
 .modal-dismiss-btn {
   background: transparent;
-  border: 1px solid var(--crt-green);
   color: var(--crt-green);
   font-family: 'VT323', 'IBM Plex Mono', monospace;
   font-size: 18px;

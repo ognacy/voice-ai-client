@@ -1,3 +1,11 @@
+0.8:
+- Remove text chat feature (unused)
+
+0.7:
+- more cosmetic changes
+- removed borders
+- improved the look of drop downs
+
 0.6:
 - cosmetic changes
 

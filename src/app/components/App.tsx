@@ -5,19 +5,16 @@ import type { APIRequest } from "@pipecat-ai/client-js";
 
 import { Tabs } from "./Tabs";
 import { TerminalConversation } from "./TerminalConversation";
-import { TextTranscript } from "./TextTranscript";
 import { TerminalEvents } from "./TerminalEvents";
 import { MemoriesTable } from "./MemoriesTable";
 import { StockTable } from "./StockTable";
 import { AsciiConnectButton } from "./AsciiConnectButton";
-import { AsciiResetButton } from "./AsciiResetButton";
 import { ProfileSelector } from "./ProfileSelector";
 import { GatingModeSelector } from "./GatingModeSelector";
 import { ListenToggleButton } from "./ListenToggleButton";
 import { MicDots } from "./MicDots";
 import { VersionDisplay } from "./VersionDisplay";
 import { NewVersionPopup } from "./NewVersionPopup";
-import { useTextChat } from "../hooks/useTextChat";
 import { useMemories } from "../hooks/useMemories";
 import { useStock } from "../hooks/useStock";
 import { useVersion } from "../hooks/useVersion";
@@ -40,7 +37,6 @@ export const App = ({
   connectParams,
   handleDisconnect,
 }: AppProps) => {
-  const { messages: textMessages, sendMessage, resetSession, isConnected: textChatConnected } = useTextChat();
   const { memories, isLoading: memoriesLoading, error: memoriesError, refresh: refreshMemories, createMemory, updateMemory, deleteMemory } = useMemories();
   const { stock, isLoading: stockLoading, error: stockError, refresh: refreshStock, createStock, updateStock, deleteStock } = useStock();
   const {
@@ -103,10 +99,6 @@ export const App = ({
             onConnect={handleConnect}
             onDisconnect={handleDisconnectInternal}
           />
-          <AsciiResetButton
-            onReset={resetSession}
-            isConnected={textChatConnected}
-          />
           <ProfileSelector
             clients={clients}
             selectedClientId={selectedClientId}
@@ -143,13 +135,6 @@ export const App = ({
               <div className="content-area">
                 <div className="transcript-section">
                   <TerminalConversation />
-                </div>
-                <div className="text-transcript-section">
-                  <TextTranscript
-                    messages={textMessages}
-                    onSendMessage={sendMessage}
-                    isConnected={textChatConnected}
-                  />
                 </div>
                 <div className="events-section">
                   <TerminalEvents />
