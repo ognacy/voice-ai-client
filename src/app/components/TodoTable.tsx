@@ -10,8 +10,13 @@ interface TodoItem {
   completed_at: string | null;
 }
 
-interface DeletedTodo {
-  item: TodoItem;
+type UndoAction =
+  | { type: "create"; item: TodoItem }
+  | { type: "update"; item: TodoItem; previousState: TodoItem }
+  | { type: "delete"; item: TodoItem };
+
+interface UndoEntry {
+  action: UndoAction;
   timestamp: number;
 }
 
@@ -23,9 +28,12 @@ export const TodoTable = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [newTodoInput, setNewTodoInput] = useState("");
   const [isAdding, setIsAdding] = useState(false);
-  const [lastDeleted, setLastDeleted] = useState<DeletedTodo | null>(null);
+  const [lastAction, setLastAction] = useState<UndoEntry | null>(null);
   const [isUndoing, setIsUndoing] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
   const addInputRef = useRef<HTMLInputElement>(null);
+  const editInputRef = useRef<HTMLInputElement>(null);
   const initialLoadDone = useRef(false);
 
   const showError = (message: string) => {
@@ -91,6 +99,17 @@ export const TodoTable = () => {
       }
     });
 
+    es.addEventListener("todo_updated", (e) => {
+      try {
+        const data = JSON.parse(e.data);
+        setTodos((prev) =>
+          prev.map((item) => (item.id === data.id ? data : item))
+        );
+      } catch {
+        // Ignore parse errors
+      }
+    });
+
     return () => {
       es.close();
     };
@@ -98,14 +117,22 @@ export const TodoTable = () => {
 
   // Clear undo after 30 seconds
   useEffect(() => {
-    if (!lastDeleted) return;
+    if (!lastAction) return;
 
     const timeout = setTimeout(() => {
-      setLastDeleted(null);
+      setLastAction(null);
     }, 30000);
 
     return () => clearTimeout(timeout);
-  }, [lastDeleted]);
+  }, [lastAction]);
+
+  // Focus edit input when editing starts
+  useEffect(() => {
+    if (editingId) {
+      editInputRef.current?.focus();
+      editInputRef.current?.select();
+    }
+  }, [editingId]);
 
   // Keyboard shortcut: + to focus add input
   useEffect(() => {
@@ -140,6 +167,12 @@ export const TodoTable = () => {
         throw new Error(data.error || "Failed to create todo");
       }
 
+      const createdTodo = await response.json();
+      // Store for undo (we can delete the newly created item)
+      setLastAction({
+        action: { type: "create", item: createdTodo },
+        timestamp: Date.now(),
+      });
       // SSE event will add it to state
       setNewTodoInput("");
     } catch (err) {
@@ -166,7 +199,10 @@ export const TodoTable = () => {
 
       // Store for undo after successful API call
       if (itemToDelete) {
-        setLastDeleted({ item: itemToDelete, timestamp: Date.now() });
+        setLastAction({
+          action: { type: "delete", item: itemToDelete },
+          timestamp: Date.now(),
+        });
       }
       // SSE event will remove it from state, but also remove locally for immediate feedback
       setTodos((prev) => prev.filter((t) => t.id !== id));
@@ -176,22 +212,43 @@ export const TodoTable = () => {
   };
 
   const handleUndo = async () => {
-    if (!lastDeleted || isUndoing) return;
+    if (!lastAction || isUndoing) return;
 
     setIsUndoing(true);
     try {
-      const response = await fetch("/api/todos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: lastDeleted.item.content }),
-      });
+      const { action } = lastAction;
 
-      if (!response.ok) {
-        throw new Error("Failed to restore todo");
+      if (action.type === "delete") {
+        // Undo delete: recreate the item
+        const response = await fetch("/api/todos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: action.item.content }),
+        });
+        if (!response.ok) throw new Error("Failed to restore todo");
+      } else if (action.type === "create") {
+        // Undo create: delete the item
+        const response = await fetch(`/api/todos/${action.item.id}`, {
+          method: "DELETE",
+        });
+        if (!response.ok) throw new Error("Failed to undo create");
+        // Remove locally for immediate feedback
+        setTodos((prev) => prev.filter((t) => t.id !== action.item.id));
+      } else if (action.type === "update") {
+        // Undo update: restore previous state
+        const response = await fetch(`/api/todos/${action.item.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            content: action.previousState.content,
+            completed: action.previousState.completed,
+          }),
+        });
+        if (!response.ok) throw new Error("Failed to undo edit");
       }
 
-      // SSE event will add it to state
-      setLastDeleted(null);
+      // SSE events will update state
+      setLastAction(null);
     } catch (err) {
       showError(err instanceof Error ? err.message : "Failed to undo");
     } finally {
@@ -199,18 +256,116 @@ export const TodoTable = () => {
     }
   };
 
-  const handleToggleComplete = (id: string) => {
-    // For now, just toggle locally (API integration coming later)
+  const handleToggleComplete = async (id: string) => {
+    const todo = todos.find((t) => t.id === id);
+    if (!todo) return;
+
+    const previousState = { ...todo };
+    const newCompleted = !todo.completed;
+
+    // Optimistic update
     setTodos((prev) =>
       prev.map((t) => {
         if (t.id !== id) return t;
         return {
           ...t,
-          completed: !t.completed,
-          completed_at: !t.completed ? new Date().toISOString() : null,
+          completed: newCompleted,
+          completed_at: newCompleted ? new Date().toISOString() : null,
         };
       })
     );
+
+    try {
+      const response = await fetch(`/api/todos/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ completed: newCompleted }),
+      });
+
+      if (!response.ok) {
+        // Revert on failure
+        setTodos((prev) =>
+          prev.map((t) => (t.id === id ? previousState : t))
+        );
+        throw new Error("Failed to update todo");
+      }
+
+      const updatedTodo = await response.json();
+      // Store for undo
+      setLastAction({
+        action: { type: "update", item: updatedTodo, previousState },
+        timestamp: Date.now(),
+      });
+    } catch (err) {
+      showError(err instanceof Error ? err.message : "Failed to toggle todo");
+    }
+  };
+
+  const handleStartEdit = (todo: TodoItem) => {
+    setEditingId(todo.id);
+    setEditValue(todo.content);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditValue("");
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingId || !editValue.trim()) {
+      handleCancelEdit();
+      return;
+    }
+
+    const todo = todos.find((t) => t.id === editingId);
+    if (!todo || todo.content === editValue.trim()) {
+      handleCancelEdit();
+      return;
+    }
+
+    const previousState = { ...todo };
+    const newContent = editValue.trim();
+
+    // Optimistic update
+    setTodos((prev) =>
+      prev.map((t) => (t.id === editingId ? { ...t, content: newContent } : t))
+    );
+    setEditingId(null);
+    setEditValue("");
+
+    try {
+      const response = await fetch(`/api/todos/${todo.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: newContent }),
+      });
+
+      if (!response.ok) {
+        // Revert on failure
+        setTodos((prev) =>
+          prev.map((t) => (t.id === todo.id ? previousState : t))
+        );
+        throw new Error("Failed to update todo");
+      }
+
+      const updatedTodo = await response.json();
+      // Store for undo
+      setLastAction({
+        action: { type: "update", item: updatedTodo, previousState },
+        timestamp: Date.now(),
+      });
+    } catch (err) {
+      showError(err instanceof Error ? err.message : "Failed to save edit");
+    }
+  };
+
+  const handleEditKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSaveEdit();
+    } else if (e.key === "Escape") {
+      handleCancelEdit();
+    }
   };
 
   const handleAddKeyDown = (e: React.KeyboardEvent) => {
@@ -247,7 +402,7 @@ export const TodoTable = () => {
 
   const itemCount = todos.length;
   const completedCount = todos.filter((t) => t.completed).length;
-  const canUndo = lastDeleted !== null;
+  const canUndo = lastAction !== null;
 
   return (
     <div className="todo-container">
@@ -320,7 +475,25 @@ export const TodoTable = () => {
               [{todo.completed ? "x" : " "}]
             </button>
 
-            <span className="todo-col-content">{todo.content}</span>
+            {editingId === todo.id ? (
+              <input
+                ref={editInputRef}
+                type="text"
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                onKeyDown={handleEditKeyDown}
+                onBlur={handleSaveEdit}
+                className="todo-edit-input"
+              />
+            ) : (
+              <span
+                className="todo-col-content"
+                onClick={() => handleStartEdit(todo)}
+                title="Click to edit"
+              >
+                {todo.content}
+              </span>
+            )}
 
             <span className="todo-col-added">
               {formatTimestamp(todo.created_at)}
