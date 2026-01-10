@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 
 interface TodoItem {
   id: string;
@@ -10,35 +10,42 @@ interface TodoItem {
   completed_at: string | null;
 }
 
-// Mock data for now
-const MOCK_TODOS: TodoItem[] = [
-  {
-    id: "1",
-    content: "Call the plumber",
-    completed: false,
-    created_at: "2025-01-09T10:30:00.000000",
-    completed_at: null,
-  },
-  {
-    id: "2",
-    content: "Buy groceries",
-    completed: true,
-    created_at: "2025-01-08T09:00:00.000000",
-    completed_at: "2025-01-08T14:30:00.000000",
-  },
-  {
-    id: "3",
-    content: "Schedule dentist appointment",
-    completed: false,
-    created_at: "2025-01-07T15:00:00.000000",
-    completed_at: null,
-  },
-];
-
 export const TodoTable = () => {
-  const [todos, setTodos] = useState<TodoItem[]>(MOCK_TODOS);
+  const [todos, setTodos] = useState<TodoItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [newTodoInput, setNewTodoInput] = useState("");
   const addInputRef = useRef<HTMLInputElement>(null);
+  const initialLoadDone = useRef(false);
+
+  // Fetch todos from API
+  const fetchTodos = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/todos?include_completed=true");
+      if (!response.ok) {
+        throw new Error("Failed to fetch todos");
+      }
+      const data = await response.json();
+      const todoList = Array.isArray(data) ? data : (data.todos || []);
+      setTodos(todoList);
+    } catch (err) {
+      console.error("Failed to fetch todos:", err);
+      setError("Failed to load todos");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Initial load
+  useEffect(() => {
+    if (!initialLoadDone.current) {
+      initialLoadDone.current = true;
+      fetchTodos();
+    }
+  }, [fetchTodos]);
 
   // Keyboard shortcut: + to focus add input
   useEffect(() => {
@@ -60,6 +67,7 @@ export const TodoTable = () => {
   const handleAddTodo = () => {
     if (!newTodoInput.trim()) return;
 
+    // For now, just add locally (API integration coming later)
     const newTodo: TodoItem = {
       id: Date.now().toString(),
       content: newTodoInput.trim(),
@@ -74,10 +82,12 @@ export const TodoTable = () => {
   };
 
   const handleDelete = (id: string) => {
+    // For now, just delete locally (API integration coming later)
     setTodos((prev) => prev.filter((t) => t.id !== id));
   };
 
   const handleToggleComplete = (id: string) => {
+    // For now, just toggle locally (API integration coming later)
     setTodos((prev) =>
       prev.map((t) => {
         if (t.id !== id) return t;
@@ -132,6 +142,12 @@ export const TodoTable = () => {
         </span>
       </div>
 
+      <div className="memories-controls">
+        <button className="refresh-button" onClick={fetchTodos} disabled={isLoading}>
+          {isLoading ? "LOADING..." : "REFRESH"}
+        </button>
+      </div>
+
       <div className="todo-header">
         <span className="todo-col-check"></span>
         <span className="todo-col-content">ITEM</span>
@@ -141,7 +157,13 @@ export const TodoTable = () => {
       </div>
 
       <div className="todo-list">
-        {sortedTodos.length === 0 && (
+        {error && (
+          <div className="memories-error">
+            <span className="error-text">{">"} Error: {error}</span>
+          </div>
+        )}
+
+        {!error && sortedTodos.length === 0 && !isLoading && (
           <div className="memories-empty">
             <span className="content" style={{ opacity: 0.5 }}>
               {">"} No to-do items yet
