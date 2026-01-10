@@ -17,6 +17,7 @@ interface DeletedTodo {
 
 export const TodoTable = () => {
   const [todos, setTodos] = useState<TodoItem[]>([]);
+  const [filter, setFilter] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -81,6 +82,15 @@ export const TodoTable = () => {
       }
     });
 
+    es.addEventListener("todo_deleted", (e) => {
+      try {
+        const data = JSON.parse(e.data);
+        setTodos((prev) => prev.filter((item) => item.id !== data.id));
+      } catch {
+        // Ignore parse errors
+      }
+    });
+
     return () => {
       es.close();
     };
@@ -140,14 +150,29 @@ export const TodoTable = () => {
     }
   };
 
-  const handleDelete = (id: string) => {
-    // Store for undo
+  const handleDelete = async (id: string) => {
+    // Store for undo before deleting
     const itemToDelete = todos.find((t) => t.id === id);
-    if (itemToDelete) {
-      setLastDeleted({ item: itemToDelete, timestamp: Date.now() });
+
+    try {
+      const response = await fetch(`/api/todos/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to delete todo");
+      }
+
+      // Store for undo after successful API call
+      if (itemToDelete) {
+        setLastDeleted({ item: itemToDelete, timestamp: Date.now() });
+      }
+      // SSE event will remove it from state, but also remove locally for immediate feedback
+      setTodos((prev) => prev.filter((t) => t.id !== id));
+    } catch (err) {
+      showError(err instanceof Error ? err.message : "Failed to delete todo");
     }
-    // For now, just delete locally (API integration coming later)
-    setTodos((prev) => prev.filter((t) => t.id !== id));
   };
 
   const handleUndo = async () => {
@@ -206,15 +231,19 @@ export const TodoTable = () => {
     }
   };
 
-  // Sort: incomplete first, then by date (newest first)
-  const sortedTodos = useMemo(() => {
-    return [...todos].sort((a, b) => {
-      if (a.completed !== b.completed) {
-        return a.completed ? 1 : -1;
-      }
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-    });
-  }, [todos]);
+  // Filter and sort: incomplete first, then by date (newest first)
+  const filteredTodos = useMemo(() => {
+    const lowerFilter = filter.toLowerCase();
+
+    return todos
+      .filter((t) => t.content.toLowerCase().includes(lowerFilter))
+      .sort((a, b) => {
+        if (a.completed !== b.completed) {
+          return a.completed ? 1 : -1;
+        }
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
+  }, [todos, filter]);
 
   const itemCount = todos.length;
   const completedCount = todos.filter((t) => t.completed).length;
@@ -232,6 +261,16 @@ export const TodoTable = () => {
       </div>
 
       <div className="memories-controls">
+        <div className="filter-input-wrapper">
+          <span className="filter-prompt">FILTER:</span>
+          <input
+            type="text"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder="search..."
+            className="filter-input"
+          />
+        </div>
         <button
           className="undo-button"
           onClick={handleUndo}
@@ -260,15 +299,15 @@ export const TodoTable = () => {
           </div>
         )}
 
-        {!error && sortedTodos.length === 0 && !isLoading && (
+        {!error && filteredTodos.length === 0 && !isLoading && (
           <div className="memories-empty">
             <span className="content" style={{ opacity: 0.5 }}>
-              {">"} No to-do items yet
+              {">"} {filter ? "No matches found" : "No to-do items yet"}
             </span>
           </div>
         )}
 
-        {sortedTodos.map((todo) => (
+        {filteredTodos.map((todo) => (
           <div
             key={todo.id}
             className={`todo-row ${todo.completed ? "todo-completed" : ""}`}
