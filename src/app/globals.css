@@ -1847,3 +1847,136 @@ button[class*="Mic"] {
   }
 }
 
+/* ===================== */
+/* To-Do List Styles     */
+/* ===================== */
+
+.todo-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+}
+
+.todo-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--crt-green-dim);
+}
+
+.todo-list {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 8px;
+}
+
+.todo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+}
+
+.todo-row:hover {
+  background: rgba(0, 255, 65, 0.05);
+}
+
+.todo-completed {
+  opacity: 0.5;
+}
+
+.todo-completed .todo-col-content {
+  text-decoration: line-through;
+}
+
+.todo-checkbox {
+  background: transparent;
+  border: none;
+  color: var(--crt-green);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  min-width: 28px;
+}
+
+.todo-checkbox:hover {
+  text-shadow: 0 0 10px var(--crt-green);
+}
+
+.todo-col-check {
+  min-width: 28px;
+}
+
+.todo-col-content {
+  flex: 1;
+  color: var(--crt-green);
+}
+
+.todo-col-added,
+.todo-col-done {
+  min-width: 70px;
+  color: var(--crt-green-dim);
+  font-size: 12px;
+  text-align: center;
+}
+
+.todo-col-actions {
+  min-width: 50px;
+}
+
+.todo-delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--crt-green-dim);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 4px;
+  transition: all 0.2s ease;
+}
+
+.todo-delete-btn:hover {
+  color: #ff6666;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+.todo-add-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 255, 65, 0.2);
+  margin-top: auto;
+}
+
+.todo-add-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--crt-green-dim);
+  color: var(--crt-green);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  padding: 8px 0;
+  outline: none;
+}
+
+.todo-add-input:focus {
+  border-bottom-color: var(--crt-green);
+  box-shadow: 0 2px 10px rgba(0, 255, 65, 0.2);
+}
+
+.todo-add-input::placeholder {
+  color: var(--crt-green-dim);
+  opacity: 0.5;
+}
+

@@ -9,6 +9,7 @@ import { TerminalEvents } from "./TerminalEvents";
 import { MemoriesTable } from "./MemoriesTable";
 import { StockTable } from "./StockTable";
 import { FreezerTable } from "./FreezerTable";
+import { TodoTable } from "./TodoTable";
 import { AsciiConnectButton } from "./AsciiConnectButton";
 import { ProfileSelector } from "./ProfileSelector";
 import { GatingModeSelector } from "./GatingModeSelector";
@@ -33,6 +34,7 @@ const TABS = [
   { id: "locations", label: "Locations" },
   { id: "inventory", label: "Inventory" },
   { id: "freezer", label: "Freezer" },
+  { id: "todo", label: "To-Do" },
 ];
 
 export const App = ({
@@ -184,6 +186,11 @@ export const App = ({
                   onUndo={undoFreezerDelete}
                   canUndo={canUndoFreezer}
                 />
+              </div>
+            )}
+            {activeTab === "todo" && (
+              <div className="content-area">
+                <TodoTable />
               </div>
             )}
           </>
