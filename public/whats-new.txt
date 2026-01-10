@@ -1,3 +1,11 @@
+0.10:
+- Add To-Do tab for task management
+- Create, edit, and delete to-do items
+- Toggle completion status with visual indicators
+- Inline editing with click-to-edit
+- Undo support for all mutations (create, edit, delete)
+- Real-time sync via SSE events
+
 0.9:
 - Add Freezer tab for tracking freezer inventory
 - 3-digit codes with descriptions and freeze dates
