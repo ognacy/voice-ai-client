@@ -1980,3 +1980,39 @@ button[class*="Mic"] {
   opacity: 0.5;
 }
 
+/* Toast notification for errors */
+.todo-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid #ff6666;
+  color: #ff6666;
+  padding: 12px 24px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+  z-index: 1000;
+  animation: todo-toast-fade 3s ease-in-out forwards;
+}
+
+@keyframes todo-toast-fade {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+}
+

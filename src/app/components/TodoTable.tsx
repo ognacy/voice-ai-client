@@ -10,13 +10,27 @@ interface TodoItem {
   completed_at: string | null;
 }
 
+interface DeletedTodo {
+  item: TodoItem;
+  timestamp: number;
+}
+
 export const TodoTable = () => {
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [newTodoInput, setNewTodoInput] = useState("");
+  const [isAdding, setIsAdding] = useState(false);
+  const [lastDeleted, setLastDeleted] = useState<DeletedTodo | null>(null);
+  const [isUndoing, setIsUndoing] = useState(false);
   const addInputRef = useRef<HTMLInputElement>(null);
   const initialLoadDone = useRef(false);
+
+  const showError = (message: string) => {
+    setErrorMessage(message);
+    setTimeout(() => setErrorMessage(null), 3000);
+  };
 
   // Fetch todos from API
   const fetchTodos = useCallback(async () => {
@@ -47,6 +61,42 @@ export const TodoTable = () => {
     }
   }, [fetchTodos]);
 
+  // SSE listener for real-time updates
+  useEffect(() => {
+    const sseUrl = "/api/events";
+    const es = new EventSource(sseUrl);
+
+    es.addEventListener("todo_created", (e) => {
+      try {
+        const data = JSON.parse(e.data);
+        // Only add if not already present (avoids duplicates)
+        setTodos((prev) => {
+          if (prev.some((item) => item.id === data.id)) {
+            return prev;
+          }
+          return [...prev, data];
+        });
+      } catch {
+        // Ignore parse errors
+      }
+    });
+
+    return () => {
+      es.close();
+    };
+  }, []);
+
+  // Clear undo after 30 seconds
+  useEffect(() => {
+    if (!lastDeleted) return;
+
+    const timeout = setTimeout(() => {
+      setLastDeleted(null);
+    }, 30000);
+
+    return () => clearTimeout(timeout);
+  }, [lastDeleted]);
+
   // Keyboard shortcut: + to focus add input
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -64,26 +114,64 @@ export const TodoTable = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const handleAddTodo = () => {
-    if (!newTodoInput.trim()) return;
+  const handleAddTodo = async () => {
+    if (!newTodoInput.trim() || isAdding) return;
 
-    // For now, just add locally (API integration coming later)
-    const newTodo: TodoItem = {
-      id: Date.now().toString(),
-      content: newTodoInput.trim(),
-      completed: false,
-      created_at: new Date().toISOString(),
-      completed_at: null,
-    };
+    setIsAdding(true);
+    try {
+      const response = await fetch("/api/todos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: newTodoInput.trim() }),
+      });
 
-    setTodos((prev) => [newTodo, ...prev]);
-    setNewTodoInput("");
-    setTimeout(() => addInputRef.current?.focus(), 0);
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to create todo");
+      }
+
+      // SSE event will add it to state
+      setNewTodoInput("");
+    } catch (err) {
+      showError(err instanceof Error ? err.message : "Failed to add todo");
+    } finally {
+      setIsAdding(false);
+      setTimeout(() => addInputRef.current?.focus(), 0);
+    }
   };
 
   const handleDelete = (id: string) => {
+    // Store for undo
+    const itemToDelete = todos.find((t) => t.id === id);
+    if (itemToDelete) {
+      setLastDeleted({ item: itemToDelete, timestamp: Date.now() });
+    }
     // For now, just delete locally (API integration coming later)
     setTodos((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  const handleUndo = async () => {
+    if (!lastDeleted || isUndoing) return;
+
+    setIsUndoing(true);
+    try {
+      const response = await fetch("/api/todos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: lastDeleted.item.content }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to restore todo");
+      }
+
+      // SSE event will add it to state
+      setLastDeleted(null);
+    } catch (err) {
+      showError(err instanceof Error ? err.message : "Failed to undo");
+    } finally {
+      setIsUndoing(false);
+    }
   };
 
   const handleToggleComplete = (id: string) => {
@@ -130,6 +218,7 @@ export const TodoTable = () => {
 
   const itemCount = todos.length;
   const completedCount = todos.filter((t) => t.completed).length;
+  const canUndo = lastDeleted !== null;
 
   return (
     <div className="todo-container">
@@ -143,6 +232,14 @@ export const TodoTable = () => {
       </div>
 
       <div className="memories-controls">
+        <button
+          className="undo-button"
+          onClick={handleUndo}
+          disabled={!canUndo || isUndoing}
+          title={canUndo ? "Undo last delete" : "Nothing to undo"}
+        >
+          {isUndoing ? "UNDOING..." : "UNDO"}
+        </button>
         <button className="refresh-button" onClick={fetchTodos} disabled={isLoading}>
           {isLoading ? "LOADING..." : "REFRESH"}
         </button>
@@ -215,8 +312,14 @@ export const TodoTable = () => {
           onKeyDown={handleAddKeyDown}
           placeholder="Enter a new to-do item..."
           className="todo-add-input"
+          disabled={isAdding}
         />
+        {isAdding && <span className="memory-adding">SAVING...</span>}
       </div>
+
+      {errorMessage && (
+        <div className="todo-toast">{errorMessage}</div>
+      )}
     </div>
   );
 };
