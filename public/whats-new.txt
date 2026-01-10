@@ -1,3 +1,10 @@
+0.9:
+- Add Freezer tab for tracking freezer inventory
+- 3-digit codes with descriptions and freeze dates
+- Color-coded age indicators (yellow > 3 months, red > 6 months)
+- Inline editing for descriptions and dates
+- Undo support for deleted items
+
 0.8:
 - Remove text chat feature (unused)
 

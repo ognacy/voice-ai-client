@@ -1646,3 +1646,204 @@ button[class*="Mic"] {
   font-style: italic;
 }
 
+/* ===== FREEZER TABLE STYLES ===== */
+.freezer-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.freezer-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--crt-green-dim);
+  margin-bottom: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--crt-green-dim);
+  text-transform: uppercase;
+}
+
+.freezer-sortable {
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.freezer-sortable:hover {
+  color: var(--crt-green);
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.freezer-list {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+
+.freezer-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  color: var(--crt-green);
+  border-bottom: 1px solid rgba(0, 255, 0, 0.1);
+}
+
+.freezer-row:hover {
+  background: rgba(0, 255, 0, 0.05);
+}
+
+/* Age-based color coding */
+.freezer-old-yellow {
+  color: #ffff33;
+  text-shadow: 0 0 5px rgba(255, 255, 0, 0.3);
+}
+
+.freezer-old-yellow .freezer-col-code,
+.freezer-old-yellow .freezer-col-desc,
+.freezer-old-yellow .freezer-col-date,
+.freezer-old-yellow .freezer-col-age {
+  color: #ffff33;
+}
+
+.freezer-old-red {
+  color: #ff6666;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+}
+
+.freezer-old-red .freezer-col-code,
+.freezer-old-red .freezer-col-desc,
+.freezer-old-red .freezer-col-date,
+.freezer-old-red .freezer-col-age {
+  color: #ff6666;
+}
+
+/* Column widths */
+.freezer-col-code {
+  width: 70px;
+  flex-shrink: 0;
+  font-weight: bold;
+}
+
+.freezer-col-desc {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.freezer-col-date {
+  width: 100px;
+  flex-shrink: 0;
+  text-align: right;
+  color: var(--crt-green-dim);
+}
+
+.freezer-col-age {
+  width: 50px;
+  flex-shrink: 0;
+  text-align: right;
+  color: var(--crt-green-dim);
+}
+
+.freezer-col-actions {
+  width: 50px;
+  flex-shrink: 0;
+}
+
+.freezer-editable {
+  cursor: pointer;
+  transition: text-shadow 0.2s ease;
+}
+
+.freezer-editable:hover {
+  text-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+}
+
+.freezer-edit-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--crt-green);
+  color: var(--crt-green);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  padding: 2px 4px;
+  outline: none;
+  width: 100%;
+}
+
+.freezer-edit-input:focus {
+  border-bottom-color: var(--crt-green);
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+/* Date input styling */
+.freezer-edit-input[type="date"] {
+  width: 130px;
+  color-scheme: dark;
+}
+
+.freezer-edit-input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) sepia(1) saturate(5) hue-rotate(85deg);
+  cursor: pointer;
+}
+
+.freezer-delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--crt-green-dim);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 4px;
+  transition: all 0.2s ease;
+}
+
+.freezer-delete-btn:hover {
+  color: #ff6666;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+/* Toast notification for errors */
+.freezer-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid #ff6666;
+  color: #ff6666;
+  padding: 12px 24px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+  z-index: 1000;
+  animation: freezer-toast-fade 3s ease-in-out forwards;
+}
+
+@keyframes freezer-toast-fade {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+}
+

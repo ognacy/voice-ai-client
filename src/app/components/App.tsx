@@ -8,6 +8,7 @@ import { TerminalConversation } from "./TerminalConversation";
 import { TerminalEvents } from "./TerminalEvents";
 import { MemoriesTable } from "./MemoriesTable";
 import { StockTable } from "./StockTable";
+import { FreezerTable } from "./FreezerTable";
 import { AsciiConnectButton } from "./AsciiConnectButton";
 import { ProfileSelector } from "./ProfileSelector";
 import { GatingModeSelector } from "./GatingModeSelector";
@@ -17,6 +18,7 @@ import { VersionDisplay } from "./VersionDisplay";
 import { NewVersionPopup } from "./NewVersionPopup";
 import { useMemories } from "../hooks/useMemories";
 import { useStock } from "../hooks/useStock";
+import { useFreezer } from "../hooks/useFreezer";
 import { useVersion } from "../hooks/useVersion";
 import { useClientProfile } from "../hooks/useClientProfile";
 
@@ -30,6 +32,7 @@ const TABS = [
   { id: "interact", label: "Interact" },
   { id: "locations", label: "Locations" },
   { id: "inventory", label: "Inventory" },
+  { id: "freezer", label: "Freezer" },
 ];
 
 export const App = ({
@@ -39,6 +42,7 @@ export const App = ({
 }: AppProps) => {
   const { memories, isLoading: memoriesLoading, error: memoriesError, refresh: refreshMemories, createMemory, updateMemory, deleteMemory } = useMemories();
   const { stock, isLoading: stockLoading, error: stockError, refresh: refreshStock, createStock, updateStock, deleteStock } = useStock();
+  const { items: freezerItems, isLoading: freezerLoading, error: freezerError, refresh: refreshFreezer, createItem: createFreezerItem, updateItem: updateFreezerItem, deleteItem: deleteFreezerItem, undoDelete: undoFreezerDelete, canUndo: canUndoFreezer } = useFreezer();
   const {
     clientVersion,
     serverVersion,
@@ -164,6 +168,21 @@ export const App = ({
                   onAddStock={createStock}
                   onDeleteStock={deleteStock}
                   onUpdateStock={updateStock}
+                />
+              </div>
+            )}
+            {activeTab === "freezer" && (
+              <div className="content-area">
+                <FreezerTable
+                  items={freezerItems}
+                  isLoading={freezerLoading}
+                  error={freezerError}
+                  onRefresh={refreshFreezer}
+                  onAddItem={createFreezerItem}
+                  onDeleteItem={deleteFreezerItem}
+                  onUpdateItem={updateFreezerItem}
+                  onUndo={undoFreezerDelete}
+                  canUndo={canUndoFreezer}
                 />
               </div>
             )}
