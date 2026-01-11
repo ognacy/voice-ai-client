@@ -323,8 +323,8 @@ html, body {
 .memories-list {
   flex: 1;
   overflow-y: auto;
-  font-family: 'VT323', 'IBM Plex Mono', monospace;
-  font-size: 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
 }
 
 .memories-list::-webkit-scrollbar {
@@ -342,12 +342,17 @@ html, body {
 
 .memory-row {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(51, 255, 51, 0.1);
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(0, 255, 0, 0.1);
   color: var(--crt-green);
-  text-shadow: 0 0 3px rgba(0, 255, 0, 0.3);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+}
+
+.memory-row:hover {
+  background: rgba(0, 255, 0, 0.05);
 }
 
 .memory-row:last-child {
@@ -412,13 +417,13 @@ html, body {
   flex: 1;
   background: transparent;
   border: none;
+  border-bottom: 1px solid var(--crt-green-dim);
   outline: none;
   color: var(--crt-green);
-  font-family: 'VT323', 'IBM Plex Mono', monospace;
-  font-size: 16px;
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  padding: 8px 0;
   caret-color: var(--crt-green);
-  animation: caretBlink 1s step-end infinite;
 }
 
 .memory-add-input::placeholder {
@@ -432,6 +437,8 @@ html, body {
 
 .memory-add-input:focus {
   outline: none;
+  border-bottom-color: var(--crt-green);
+  box-shadow: 0 2px 10px rgba(0, 255, 65, 0.2);
 }
 
 @keyframes caretBlink {
@@ -441,9 +448,8 @@ html, body {
 
 .memory-adding {
   color: #ffff33;
-  font-family: 'VT323', 'IBM Plex Mono', monospace;
-  font-size: 14px;
-  text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
   animation: blink 0.5s step-end infinite;
 }
 
@@ -451,20 +457,19 @@ html, body {
 .memory-delete-btn {
   background: transparent;
   border: none;
-  color: #ff3333;
-  font-family: 'VT323', 'IBM Plex Mono', monospace;
-  font-size: 14px;
+  color: #ff6666;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
   cursor: pointer;
   padding: 2px 6px;
   margin-left: auto;
-  text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
   opacity: 0.6;
   transition: all 0.2s ease;
 }
 
 .memory-delete-btn:hover {
   opacity: 1;
-  text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+  color: #ff3333;
 }
 
 /* Editable fields */
@@ -477,23 +482,24 @@ html, body {
 }
 
 .memory-editable:hover {
-  background: rgba(51, 255, 51, 0.1);
-  text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+  background: rgba(0, 255, 0, 0.1);
+  text-decoration: underline;
 }
 
 /* Inline edit input */
 .memory-edit-input {
-  background: rgba(51, 255, 51, 0.1);
-  /* border: 1px solid var(--crt-green); */
+  background: rgba(0, 255, 65, 0.05);
+  border: 1px solid var(--crt-green);
   outline: none;
   color: var(--crt-green);
-  font-family: 'VT323', 'IBM Plex Mono', monospace;
-  font-size: 16px;
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-  padding: 2px 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  padding: 4px 8px;
   caret-color: var(--crt-green);
-  animation: caretBlink 1s step-end infinite;
-  box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+}
+
+.memory-edit-input:focus {
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
 }
 
 .memory-item-edit {
@@ -1091,8 +1097,8 @@ button[class*="Mic"] {
 .stock-list {
   flex: 1;
   overflow-y: auto;
-  font-family: 'VT323', 'IBM Plex Mono', monospace;
-  font-size: 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
 }
 
 .stock-list::-webkit-scrollbar {
@@ -1110,12 +1116,17 @@ button[class*="Mic"] {
 
 .stock-row {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(51, 255, 51, 0.1);
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(0, 255, 0, 0.1);
   color: var(--crt-green);
-  text-shadow: 0 0 3px rgba(0, 255, 0, 0.3);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+}
+
+.stock-row:hover {
+  background: rgba(0, 255, 0, 0.05);
 }
 
 .stock-row:last-child {
@@ -1125,12 +1136,10 @@ button[class*="Mic"] {
 /* Stock level color coding */
 .stock-row.level-sufficient {
   color: var(--crt-green);
-  text-shadow: 0 0 3px rgba(0, 255, 0, 0.3);
 }
 
 .stock-row.level-running-low {
   color: var(--crt-amber);
-  text-shadow: 0 0 5px var(--crt-amber-glow);
 }
 
 .stock-row.level-running-low .stock-item,
@@ -1141,7 +1150,6 @@ button[class*="Mic"] {
 
 .stock-row.level-out-of-stock {
   color: var(--crt-red);
-  text-shadow: 0 0 5px var(--crt-red-glow);
 }
 
 .stock-row.level-out-of-stock .stock-item,
@@ -1201,7 +1209,8 @@ button[class*="Mic"] {
 }
 
 .stock-editable:hover {
-  background: rgba(51, 255, 51, 0.1);
+  background: rgba(0, 255, 0, 0.1);
+  text-decoration: underline;
 }
 
 .stock-row.level-running-low .stock-editable:hover {
@@ -1213,36 +1222,37 @@ button[class*="Mic"] {
 }
 
 .stock-edit-input {
-  background: rgba(51, 255, 51, 0.1);
+  background: rgba(0, 255, 65, 0.05);
+  border: 1px solid var(--crt-green);
   outline: none;
   color: var(--crt-green);
-  font-family: 'VT323', 'IBM Plex Mono', monospace;
-  font-size: 16px;
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-  padding: 2px 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  padding: 4px 8px;
   caret-color: var(--crt-green);
-  animation: caretBlink 1s step-end infinite;
-  box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
   min-width: 80px;
+}
+
+.stock-edit-input:focus {
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
 }
 
 .stock-delete-btn {
   background: transparent;
   border: none;
-  color: var(--crt-red);
-  font-family: 'VT323', 'IBM Plex Mono', monospace;
-  font-size: 14px;
+  color: #ff6666;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
   cursor: pointer;
   padding: 2px 6px;
   margin-left: auto;
-  text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
   opacity: 0.6;
   transition: all 0.2s ease;
 }
 
 .stock-delete-btn:hover {
   opacity: 1;
-  text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+  color: #ff3333;
 }
 
 .stock-add-row {
@@ -1258,13 +1268,13 @@ button[class*="Mic"] {
   flex: 1;
   background: transparent;
   border: none;
+  border-bottom: 1px solid var(--crt-green-dim);
   outline: none;
   color: var(--crt-green);
-  font-family: 'VT323', 'IBM Plex Mono', monospace;
-  font-size: 16px;
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  padding: 8px 0;
   caret-color: var(--crt-green);
-  animation: caretBlink 1s step-end infinite;
 }
 
 .stock-add-input::placeholder {
@@ -1278,6 +1288,8 @@ button[class*="Mic"] {
 
 .stock-add-input:focus {
   outline: none;
+  border-bottom-color: var(--crt-green);
+  box-shadow: 0 2px 10px rgba(0, 255, 65, 0.2);
 }
 
 /* Retro Modal */

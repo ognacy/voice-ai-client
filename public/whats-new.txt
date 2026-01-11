@@ -1,3 +1,8 @@
+0.12:
+- Improve readability of Locations and Inventory tabs
+- Replace glowing VT323 font with cleaner IBM Plex Mono
+- Consistent styling across all tabs (matching Freezer design)
+
 0.11:
 - Sync client profile and gating mode with server on connect
 
