@@ -1,3 +1,6 @@
+0.11:
+- Sync client profile and gating mode with server on connect
+
 0.10:
 - Add To-Do tab for task management
 - Create, edit, and delete to-do items

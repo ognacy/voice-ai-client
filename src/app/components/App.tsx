@@ -76,7 +76,15 @@ export const App = ({
       ...connectParams,
       requestData,
     });
-  }, [client, connectParams, selectedClientId]);
+
+    // Sync server state with client UI after connection
+    if (selectedClientId) {
+      await selectClient(selectedClientId);
+    }
+    if (currentGatingMode) {
+      await setGatingMode(currentGatingMode);
+    }
+  }, [client, connectParams, selectedClientId, selectClient, currentGatingMode, setGatingMode]);
 
   // Disconnect handler - use provided handler or fall back to client.disconnect()
   const handleDisconnectInternal = useCallback(async () => {
