@@ -1,7 +1,8 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 
 import type { PipecatClient } from "@pipecat-ai/client-js";
 import type { APIRequest } from "@pipecat-ai/client-js";
+import { usePipecatConnectionState } from "@pipecat-ai/voice-ui-kit";
 
 import { Tabs } from "./Tabs";
 import { TerminalConversation } from "./TerminalConversation";
@@ -65,6 +66,41 @@ export const App = ({
     toggleListening,
   } = useClientProfile();
 
+  const { isConnected } = usePipecatConnectionState();
+  const wasConnectedRef = useRef(false);
+
+  // Sync server state with client UI when connection is established
+  useEffect(() => {
+    const syncServerState = async () => {
+      if (isConnected && !wasConnectedRef.current) {
+        console.log("[App] Connection established, syncing server state...");
+
+        if (selectedClientId) {
+          console.log(`[App] Setting client profile: ${selectedClientId}`);
+          try {
+            await selectClient(selectedClientId);
+            console.log(`[App] Client profile set successfully: ${selectedClientId}`);
+          } catch (err) {
+            console.error("[App] Failed to set client profile:", err);
+          }
+        }
+
+        if (currentGatingMode) {
+          console.log(`[App] Setting gating mode: ${currentGatingMode}`);
+          try {
+            await setGatingMode(currentGatingMode);
+            console.log(`[App] Gating mode set successfully: ${currentGatingMode}`);
+          } catch (err) {
+            console.error("[App] Failed to set gating mode:", err);
+          }
+        }
+      }
+      wasConnectedRef.current = isConnected;
+    };
+
+    syncServerState();
+  }, [isConnected, selectedClientId, currentGatingMode, selectClient, setGatingMode]);
+
   // Custom connect handler that passes client_id in requestData
   const handleConnect = useCallback(async () => {
     const requestData = {
@@ -72,19 +108,12 @@ export const App = ({
       ...(selectedClientId ? { client_id: selectedClientId } : {}),
     };
 
+    console.log("[App] Starting connection with requestData:", requestData);
     await client.startBotAndConnect({
       ...connectParams,
       requestData,
     });
-
-    // Sync server state with client UI after connection
-    if (selectedClientId) {
-      await selectClient(selectedClientId);
-    }
-    if (currentGatingMode) {
-      await setGatingMode(currentGatingMode);
-    }
-  }, [client, connectParams, selectedClientId, selectClient, currentGatingMode, setGatingMode]);
+  }, [client, connectParams, selectedClientId]);
 
   // Disconnect handler - use provided handler or fall back to client.disconnect()
   const handleDisconnectInternal = useCallback(async () => {
